@@ -1,7 +1,7 @@
 plugins {
-    id 'java'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'java-library'
+    id 'maven-publish'
 }
 
 group = 'ru.java.meetup'
@@ -26,18 +26,29 @@ dependencyManagement {
 }
 
 dependencies {
-    api "org.springframework.boot:spring-boot-autoconfigure"
-    annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor"
-
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-web'
 
     // Junit
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "org.junit.jupiter:junit-jupiter-api"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
 
 test {
     useJUnitPlatform()
 }
 
+publishing {
+    publications {
+        main(MavenPublication) {
+            from components.java
+            withBuildIdentifier()
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+        }
+    }
+}
