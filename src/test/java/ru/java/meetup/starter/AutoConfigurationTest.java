@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import ru.java.meetup.starter.autoconfiguration.MessageStarterAutoConfiguration;
+import ru.java.meetup.starter.controller.MessageController;
 import ru.java.meetup.starter.service.MessageService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,6 +21,7 @@ class AutoConfigurationTest {
         this.contextRunner
                 .withPropertyValues("app.message=%s".formatted(MESSAGE))
                 .run(context -> {
+                    assertThat(context).hasSingleBean(MessageController.class);
                     assertThat(context).hasSingleBean(MessageService.class);
                     assertThat(context.getBean(MessageService.class).getMessage()).isEqualTo(MESSAGE);
                 });
